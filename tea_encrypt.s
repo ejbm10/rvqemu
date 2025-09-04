@@ -47,7 +47,7 @@ _loop:
 	
 	# Decremento del contador
 	addi s3, s3, -1
-	bgez s3, _loop
+	bnez s3, _loop
 	
 	# Guarda resultado
 	sw t0, 0(s0)
