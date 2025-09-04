@@ -90,31 +90,35 @@ int main() {
     };
 
     // Availables keys for encryption and decryption.
-    int key[4] = {0x542AB230, 0xAB7678CD, 0x98FF75EA, 0x1991ABCD};
+    int key[4] = {0x12345678, 0x9ABCDEF0, 0xFEDCBA98, 0x76543210};  // Clave original: 0x12345678, 0x9ABCDEF0, 0xFEDCBA98, 0x76543210
 
     int words[64];
 
-    int total = get_words(words, predefined_strings[1]);
+    print_string("\nPruebas:\n");
 
-    // Printing the string the user chose
-    print_string("\nCadena seleccionada:\n");
-    print_words(words, total);
+    for (int i = 0; i < 6; i++) {
+        int total = get_words(words, predefined_strings[i]);
 
-    for (int i = 0; i < total; i += 2) {
-        tea_encrypt(words + i, key); // Calling encryption
+        // Printing the string the user chose
+        print_string("\nCadena original:\n");
+        print_words(words, total);
+
+        for (int i = 0; i < total; i += 2) {
+            tea_encrypt(words + i, key); // Calling encryption
+        }
+
+        // Printing result of encryption
+        print_string("Encriptada:\n");
+        print_words(words, total);
+
+        for (int i = 0; i < total; i += 2) {
+            tea_decrypt(words + i, key); // Calling decryption
+        }
+
+        // Printing result of decryption (should be the same as the original string)
+        print_string("Decriptada:\n");
+        print_words(words, total);
     }
-
-    // Printing result of encryption
-    print_string("Encriptada:\n");
-    print_words(words, total);
-
-    for (int i = 0; i < total; i += 2) {
-        tea_decrypt(words + i, key); // Calling decryption
-    }
-
-    // Printing result of decryption (should be the same as the original string)
-    print_string("Decriptada:\n");
-    print_words(words, total);
 
     // Infinite loop to keep QEMU running.
     while (1) {
