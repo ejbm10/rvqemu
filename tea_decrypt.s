@@ -1,6 +1,6 @@
 .section .data
 _coded:
-	.word 0x7FD37400, 0xC153C5EE
+	.word 0xDA21C31F, 0x5E98B1FD
 _key:
 	.word 0x12345678, 0x9ABCDEF0, 0xFEDCBA98, 0x76543210
 
@@ -47,7 +47,7 @@ _loop:
 	
 	# Decremento del contador
 	addi s3, s3, -1
-	bgez s3, _loop
+	bnez s3, _loop
 	
 	# Guarda resultado
 	sw t0, 0(s0)
