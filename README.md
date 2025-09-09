@@ -25,7 +25,7 @@ Se trata de un entorno QEMU para la simulación de ejecución sin sistema operat
 
 Al tratarse de una programación bare-metal, se decidió establecer de forma fija un arreglo de cadenas de carácteres en memoria, así como una clave de encriptación también fija en memoria. El programador debe recompilar para elegir otra cadena de caracteres y/u otra clave. 
 
-![Arquitectura](images/arquitectura.jpeg)
+![Arquitectura](images/arquitectura.jpg)
 
 ---
 
@@ -41,4 +41,5 @@ Al tratarse de una programación bare-metal, se decidió establecer de forma fij
 ## 4. Instrucciones de uso de la aplicación
 
 - [`examples/README.md`](examples/README.md) - Información general
+
 
