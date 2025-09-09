@@ -1,111 +1,44 @@
-# Entorno de desarrollo RISC-V con QEMU y GDB
+# Proyecto I: Encriptación y decriptación con TEA en un entorno QEMU
+## Arquitectura de Computadores I
+### Profesor: Dr. Ing. Jeferson Gonzalez
+### Estudiante: Eduardo Bolívar Minguet 2020158103
 
-Este proyecto proporciona un entorno completo para desarrollo y depuración de programas bare-metal en arquitectura RISC-V de 32 bits, utilizando QEMU y GDB dentro de un contenedor Docker.
-
----
-
-## 1. Estructura del proyecto
-
-```
-.
-├── Dockerfile
-├── run.sh
-├── examples/           # Ejemplos de código
-│   ├── asm-only/      # Ejemplo de ensamblador puro
-│   │   ├── test.s
-│   │   ├── linker.ld
-│   │   ├── build.sh
-│   │   └── run-qemu.sh
-│   └── c-asm/         # Ejemplo de C + ensamblador
-│       ├── example.c
-│       ├── math_asm.s
-│       ├── linker.ld
-│       ├── build.sh
-│       └── run-qemu.sh
-└── README.md
-```
-
-- `examples/` contiene diferentes ejemplos de programas RISC-V
-- `Dockerfile` define la imagen que incluye el emulador QEMU y el toolchain RISC-V
-- `run.sh` automatiza la construcción de la imagen y la ejecución del contenedor
-
-## Ejemplos disponibles
-
-### Ensamblador puro (`examples/asm-only/`)
-Programa simple escrito completamente en ensamblador que calcula la suma del 1 al 10.
-
-### C + Ensamblador (`examples/c-asm/`)
-Programa en C que llama funciones escritas en ensamblador, demostrando la integración entre ambos lenguajes. Este ejemplo incluye un archivo de inicio (startup.s) que inicializa la pila y llama a la función main de C, ya que los programas C necesitan un entorno de ejecución básico antes de ejecutar el código principal.
+Este proyecto presenta un ambiente de desarrollo de Qemu dentro de un contenedor Docker que provee el toolchain necesario para la compilación. El proyecto está dividido en tres programas: encriptación, decriptación, y manejo de cadenas de caractéres. A continuación se presentan los detalles de arquitectura y funcionalidad. 
 
 ---
 
-## 2. Inicio rápido
+## 1. Arquitectura del Software
 
-### Paso 1: Construir el contenedor
-```bash
-chmod +x run.sh
-./run.sh
-```
+### Programa en C
 
-### Paso 2: Elegir y compilar un ejemplo
-```bash
-# Para el ejemplo de ensamblador puro
-cd /home/rvqemu-dev/workspace/examples/asm-only
-./build.sh
+El programa principal se encuentra escrito en el lenguaje de programación C e implementa funciones para el manejo de caracteres y llamado de las funciones de encriptación y decriptación. Las funciones de encriptación y decriptación son declaradas como externas, es decir, el compilador no relaciona la definición de estas funciones dentro del código fuente, sino que deben ser buscadas por el enlazador.
 
-# Para el ejemplo de C + ensamblador
-cd /home/rvqemu-dev/workspace/examples/c-asm
-./build.sh
-```
+### Ensamblador RV32
 
-### Paso 3: Ejecutar con QEMU y depurar
-```bash
-# En una terminal: iniciar QEMU con servidor GDB
-./run-qemu.sh
+En lenguaje ensamblador RV32 se encuentran definidas las funciones de encriptación y decriptación propiamente. En un archivo (tea_encrypt.s) se encuentra el código fuente para la encriptación de una cadena de carácteres dada una dirección de memoria; en otro archivo (tea_decrypt.s) se encuentra el código fuente para la decriptación. Estas funciones son invocadas por el programa de C, y enlazadas de forma externa. 
 
-# En otra terminal: conectar GDB
-docker exec -it rvqemu /bin/bash
-cd /home/rvqemu-dev/workspace/examples/[ejemplo-elegido]
-gdb-multiarch [archivo-elf]
-```
+### Entorno de compilación
+
+Se trata de un entorno QEMU para la simulación de ejecución sin sistema operativo (bare-metal). El toolchain para generar el binario se encuentra contenido en Docker, lo que facilita la compilación sin necesidad de instalar todas las herramientas.
+
+### Decisiones de diseño
+
+Al tratarse de una programación bare-metal, se decidió establecer de forma fija un arreglo de cadenas de carácteres en memoria, así como una clave de encriptación también fija en memoria. El programador debe recompilar para elegir otra cadena de caracteres y/u otra clave. 
+
+![Arquitectura](images/arquitectura.jpeg)
 
 ---
 
-## 3. Uso detallado
+## 2. Funcionalidades implementadas
 
-### Construcción del contenedor
-El script `run.sh` construye la imagen `rvqemu` y crea un contenedor interactivo que monta el directorio del proyecto en `/home/rvqemu-dev/workspace`.
-
-### Compilación
-Cada ejemplo incluye un script `build.sh` que maneja la compilación automáticamente.
-
-**Opciones de compilación utilizadas**:
-- `-march=rv32im`: arquitectura RISC-V 32 bits con extensiones I y M
-- `-mabi=ilp32`: ABI ILP32
-- `-nostdlib -ffreestanding`: entorno bare-metal
-- `-g`: información de depuración para GDB
-
-### Ejecución y depuración
-1. **QEMU**: `run-qemu.sh` inicia QEMU con servidor GDB en puerto 1234
-2. **GDB**: Conectar desde otra terminal para depuración interactiva
-
-**Comandos útiles de GDB**:
-```gdb
-target remote :1234    # Conectar al servidor GDB
-break _start           # Punto de ruptura al inicio
-continue               # Continuar ejecución
-layout asm             # Vista de ensamblador
-layout regs            # Vista de registros
-step                   # Ejecutar siguiente instrucción
-info registers         # Mostrar registros
-monitor quit           # Finalizar sesión
-```
 
 ---
 
-## 4. Detalles de los ejemplos
+## 3. Resultados
 
-Para información específica sobre cada ejemplo, consultar:
-- [`examples/asm-only/README.md`](examples/asm-only/README.md) - Ensamblador puro
-- [`examples/c-asm/README.md`](examples/c-asm/README.md) - C + Ensamblador
+---
+
+## 4. Instrucciones de uso de la aplicación
+
 - [`examples/README.md`](examples/README.md) - Información general
+
