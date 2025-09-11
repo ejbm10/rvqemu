@@ -21,6 +21,31 @@ void print_char(char c) {
     *uart = c;
 }
 
+void print_number(int num) {
+    if (num == 0) {
+        print_char('0');
+        return;
+    }
+    
+    if (num < 0) {
+        print_char('-');
+        num = -num;
+    }
+    
+    char buffer[10];
+    int i = 0;
+    
+    while (num > 0) {
+        buffer[i++] = '0' + (num % 10);
+        num /= 10;
+    }
+    
+    // Print digits in reverse order
+    while (i > 0) {
+        print_char(buffer[--i]);
+    }
+}
+
 void print_string(const char* str) {
     while (*str) {
         print_char(*str++);
@@ -77,8 +102,13 @@ int get_words(int* words, const char* string) {
     return total_words;
 }
 
-int main() {
+static inline unsigned long long get_cycles(void) {
+    unsigned long long cycles;
+    asm volatile ("rdcycle %0" : "=r"(cycles));
+    return cycles;
+}
 
+int main() {
     // Predefined strings for user to choose.
     char* predefined_strings[6] = {
         "HOLA1234",
@@ -102,7 +132,9 @@ int main() {
         // Printing the string the user chose
         print_string("\nCadena original:\n");
         print_words(words, total);
-
+        
+        unsigned long long start = get_cycles();
+        
         for (int i = 0; i < total; i += 2) {
             tea_encrypt(words + i, key); // Calling encryption
         }
@@ -118,6 +150,15 @@ int main() {
         // Printing result of decryption (should be the same as the original string)
         print_string("Mensaje decriptado:\n");
         print_words(words, total);
+
+        unsigned long long end = get_cycles();
+
+        print_string("Ciclos consumidos en la prueba ");
+        print_number(i);
+        print_char(':');
+        print_char('\n');
+        print_number(end - start);
+        print_char('\n');
     }
 
     // Infinite loop to keep QEMU running.
