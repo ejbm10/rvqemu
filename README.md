@@ -57,33 +57,43 @@ Dentro del loop, se asignan los cuatro bytes que conforman la palabra, si el ran
 
 La impresión se realiza de forma volatil debido al ambiente bare-metal. Cada carácter es asignado a una dirección de memoria 0x10000000 para mostrarse en consola. Las funciones de impresión recorren la cadena de carácteres o el arreglo de palabras (según sea el caso) y llaman a la función volatil para cada carácter.
 
+### e. Conteo de ciclos
+
+Se implementó una función capaz de retornar los ciclos actuales de ejecución en la arquitectura RISC-V en QEMU. Esta funcionalidad no está ligada a ninguna librería, sino que está asociada directamente a registros propios del computador.
+
 ---
 
 ## 3. Resultados
 
-![EntornoGDB](images/entorno.png)
-
 Para efectos de resultados, se ejecutaron seis pruebas con mensajes de texto diferentes, de diferente largo, tildes, espacios en blanco, entre otras características. Las pruebas aquí mostradas utilizaron la clave de encriptación propuesta, siendo 0x12345678 0x9ABCDEF0 0xFEDCBA98 0x76543210.
 
 - Prueba 1: HOLA1234
+
 ![Prueba1](images/prueba1.png)
 
 - Prueba 2: Mensaje de prueba para TEA
+
 ![Prueba2](images/prueba2.png)
 
 - Prueba 3: Pizza de pepperoni con salsa
+
 ![Prueba3](images/prueba3.png)
 
 - Prueba 4: El Boeing 777 despega hoy
+
 ![Prueba4](images/prueba4.png)
 
 - Prueba 5: Estamos en septiembre del 2025
+
 ![Prueba5](images/prueba5.png)
 
 - Prueba 6: Mensaje aún más largo con tildes incluidas
+
 ![Prueba6](images/prueba6.png)
 
 Para todos los casos de prueba, se imprime el mensaje encriptado, donde se pueden visualizar carácteres no legibles, y se muestra el mensaje decriptado, el cual coincide con el mensaje original, demostrando el correcto funcionamiento del algoritmo y su implementación.
+
+En cuanto al análisis de rendimiento, la primera prueba toma aproximadamente 11 millones de ciclos en terminar de ejecutarse, entre encriptación y decriptación; esto podría indicar aspectos de inicialización, ya que el resto de pruebas presentan un consumo de ciclos más bajo, entre 5 y 6 millones de ciclos. Sin embargo, la prueba 4 presenta ciclos elevados a 13 millones.
 
 ---
 
@@ -109,8 +119,11 @@ docker exec -it rvqemu /bin/bash
 ```
 gdb-multiarch main.elf
 ```
-  para inicar GDB ligado al ejecutable main.elf.
-- En la Terminal 2, dentro de GDB, ejecutar
+- Esto llevará a la terminal de GDB:
+
+![EntornoGDB](images/entorno.png)
+
+- En la Terminal GDB, ejecutar
 ```
 target remote :1234
 ```
