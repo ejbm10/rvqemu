@@ -83,10 +83,10 @@ int main() {
     char* predefined_strings[6] = {
         "HOLA1234",
         "Mensaje de prueba para TEA",
-        "Bizcocho sabroso",
+        "Pizza de pepperoni con salsa",
         "El Boeing 777 despega hoy",
-        "Ya perdi el septiembre sin fap",
-        "Quien para una birra?"
+        "Estamos en septiembre del 2025",
+        "Mensaje aún más largo con tildes incluidas"
     };
 
     // Availables keys for encryption and decryption.
@@ -108,7 +108,7 @@ int main() {
         }
 
         // Printing result of encryption
-        print_string("Encriptada:\n");
+        print_string("Mensaje encriptado:\n");
         print_words(words, total);
 
         for (int i = 0; i < total; i += 2) {
@@ -116,7 +116,7 @@ int main() {
         }
 
         // Printing result of decryption (should be the same as the original string)
-        print_string("Decriptada:\n");
+        print_string("Mensaje decriptado:\n");
         print_words(words, total);
     }
 
